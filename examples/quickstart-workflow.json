@@ -1,0 +1,96 @@
+{
+  "id": "4ad37d1c-1550-5fdf-9878-091c3553ca5b",
+  "name": "Tech Stack → Service opportunity",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "728eb81d-957c-5207-9b1d-30628fd31791",
+      "name": "When clicking Execute workflow",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Setup\n1. Select your Apify API credential.\n2. Enter technologies used by your ideal customers.\n3. The final node adds a service angle for CRM or outreach.",
+        "height": 260,
+        "width": 440
+      },
+      "id": "e01f5ce8-dc20-544d-8655-91f3e6373b9e",
+      "name": "How to use this workflow",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -40,
+        -220
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "find",
+        "technologies": "Shopify,WordPress",
+        "matchMode": "any",
+        "hasEmail": true,
+        "dedupeByDomain": true,
+        "outputPreset": "opportunity",
+        "maxItems": 200
+      },
+      "id": "47d37326-0bbe-504b-b7a4-4e2859c4050d",
+      "name": "Find websites by technology with Apify",
+      "type": "n8n-nodes-apivault-tech-stack-lookup.techStackLookup",
+      "typeVersion": 1,
+      "position": [
+        260,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const j = $json; const raw = [j.Technologies, j.technologies, j['CMS Platform'], j['Ecommerce Platform']].flat().filter(Boolean).join(' ').toLowerCase(); let service = 'website optimization'; if (raw.includes('shopify')) service = 'Shopify conversion optimization'; else if (raw.includes('wordpress')) service = 'WordPress speed and maintenance'; else if (raw.includes('wix')) service = 'website migration or redesign'; return { json: { ...j, recommendedService: service, pitchAngle: `Offer ${service} based on the public technology profile.` } };"
+      },
+      "id": "c1ac714f-e99f-52c8-9f25-f2546f2e36a3",
+      "name": "Recommend service angle",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        560,
+        120
+      ]
+    }
+  ],
+  "connections": {
+    "When clicking Execute workflow": {
+      "main": [
+        [
+          {
+            "node": "Find websites by technology with Apify",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find websites by technology with Apify": {
+      "main": [
+        [
+          {
+            "node": "Recommend service angle",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "active": false,
+  "versionId": "8e56c837-f6a1-554b-8fe2-d18ecbf2c70f",
+  "tags": []
+}
